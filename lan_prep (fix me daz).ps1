@@ -2,14 +2,24 @@ function Show-Menu {
     Clear-Host
     Write-Host "================ LAN Optimize ================"
     Write-Host ""
-    Write-Host "Press '1' to set power profile to High (or Ultimate if exist)"
-    Write-Host "Press '2' for the works! - Max power, deprioritize services etc"
+    Write-Host "Press '1' For Basic setup ; "
     Write-Host ""
-    Write-Host "================================"
+    Write-Host "  - Set Max power Profile (High or Ultimate if exists)"
+    Write-Host "  - DNS (Auto DHCP assigned, for LAN cahce)" 
+    Write-Host ""
+    Write-Host "Press '2' For the works! ; "
+    Write-Host ""
+    Write-Host "  - All Above (in option 1)"
+    Write-Host "  - Disable Game Bar and Recording services"
+    Write-Host "  - Deprioritize services"
+    Write-Host "  - Disable xBox services"
+    Write-Host ""
+    Write-Host "=============================================="
     Write-Host ""
     Write-Host "Press '3' to set power profile to Balanced (for home)"
-    Write-Host "Q to quit."
     Write-Host ""
+    Write-Host ""
+
 }
 
 function Run-One {
@@ -20,62 +30,36 @@ function Run-One {
 	Write-Host ""
 	Write-Host "Your Power Profile is now set to : " -NoNewLine
 	powercfg.exe /getactivescheme
-	Write-Host ""
+
+
+    Write-Host "Set DNS back to AUTO on DHCP (for LAN cache)..." 
+    Get-NetAdapter | Set-DnsClientServerAddress -ResetServerAddresses
+    	Write-Host ""
 }
 
 function Run-Two {
 
-    Write-Output "Disable Game DVR and Game Bar"
-    force-mkdir "HKLM:\SOFTWARE\Policies\Microsoft\Windows\GameDVR"
-    Set-ItemProperty "HKLM:\SOFTWARE\Policies\Microsoft\Windows\GameDVR" "AllowgameDVR" 0
+    Write-Host ""
+    #Write-Host "Disable Game DVR and Game Bar..." 
+    #force-mkdir "HKLM:\SOFTWARE\Policies\Microsoft\Windows\GameDVR"
+    #Set-ItemProperty "HKLM:\SOFTWARE\Policies\Microsoft\Windows\GameDVR" "AllowgameDVR" 0
+    
 
-    # Ensure auto DNS is set so LAN cache works! 
-    Get-NetAdapter | Set-DnsClientServerAddress -ResetServerAddresses
-
-    Write-Output "Disable easy access keyboard stuff"
+    Write-Output "Disable easy access keyboard stuff..."
     Set-ItemProperty "HKCU:\Control Panel\Accessibility\StickyKeys" "Flags" "506"
     Set-ItemProperty "HKCU:\Control Panel\Accessibility\Keyboard Response" "Flags" "122"
     Set-ItemProperty "HKCU:\Control Panel\Accessibility\ToggleKeys" "Flags" "58"
-
-    $services = @(
-        "diagnosticshub.standardcollector.service" # Microsoft (R) Diagnostics Hub Standard Collector Service
-        "DiagTrack"                                # Diagnostics Tracking Service
-        "dmwappushservice"                         # WAP Push Message Routing Service (see known issues)
-        "HomeGroupListener"                        # HomeGroup Listener
-        "HomeGroupProvider"                        # HomeGroup Provider
-        "lfsvc"                                    # Geolocation Service
-        "MapsBroker"                               # Downloaded Maps Manager
-        "NetTcpPortSharing"                        # Net.Tcp Port Sharing Service
-        "RemoteAccess"                             # Routing and Remote Access
-        "RemoteRegistry"                           # Remote Registry
-        "SharedAccess"                             # Internet Connection Sharing (ICS)
-        "TrkWks"                                   # Distributed Link Tracking Client
-        "WbioSrvc"                                 # Windows Biometric Service (required for Fingerprint reader / facial detection)
-        #"WlanSvc"                                 # WLAN AutoConfig
-        "WMPNetworkSvc"                            # Windows Media Player Network Sharing Service
-        "wscsvc"                                   # Windows Security Center Service
-        "WSearch"                                  # Windows Search
-        "XblAuthManager"                           # Xbox Live Auth Manager
-        "XblGameSave"                              # Xbox Live Game Save Service
-        "XboxNetApiSvc"                            # Xbox Live Networking Service
-        "ndu"                                      # Windows Network Data Usage Monitor
-    )
-
-    foreach ($service in $services) {
-        Write-Output "Trying to disable $service"
-        Get-Service -Name $service | Set-Service -StartupType Disabled
-    }
-
+    
     # Reduce Prioitity of services to speed up my PC 
 
-    $appsBN = @(
-        # Windows 10 services
+    # Services to set to "below normal" priority
+    $services_belownormal = @(
 	    "SearchUI.exe"
 	    "SearchIndexer.exe"
         )
 
-    $appsL = @(
-        # Windows 10 services
+    # Services to set to "low" priority
+    $services_belownormal = @(
 	    "nessusd.exe"
 	    "SavService.exe"
 	    "swi_fc.exe"
@@ -88,22 +72,32 @@ function Run-Two {
 	    "DSATray.exe"
         )
 
-    Write-Output "De-Prioitising Services - Below Normal ..."
-    foreach ($app in $appsBN) {
+    # Services to disable
+    $services_disable = @(
+        "diagnosticshub.standardcollector.service" # Microsoft (R) Diagnostics Hub Standard Collector Service
+        "DiagTrack"                                # Diagnostics Tracking Service
+        "WMPNetworkSvc"                            # Windows Media Player Network Sharing Service
+        "XblAuthManager"                           # Xbox Live Auth Manager
+        "XblGameSave"                              # Xbox Live Game Save Service
+        "XboxNetApiSvc"                            # Xbox Live Networking Service
+        "ndu"                                      # Windows Network Data Usage Monitor
+        )
 
-	    #Write-Output "De-Prioitising $app"
-	    Get-WmiObject Win32_process -filter "name = '$app'" | foreach-object { $_.SetPriority(16384) }
+    Write-Output "De-prioritising Services - Below Normal ..."
+    foreach ($service in $services_belownormal) {
+
+        Write-Host "  Adjusting $service" 
+	    Get-WmiObject Win32_process -filter "name = '$service'" | foreach-object { $_.SetPriority(16384) } | Out-Null
 
 	    }
 
-    Write-Output "De-Prioitising Services - Low  ..."
-    foreach ($app in $appsL) {
+    Write-Output "De-prioritising Services - Low  ..."
+    foreach ($service in $services_belownormal) {
 
-	    #Write-Output "De-Prioitising $app"
-	    Get-WmiObject Win32_process -filter "name = '$app'" | foreach-object { $_.SetPriority(64) }
+	    Write-Host "  Adjusting $service" 
+	    Get-WmiObject Win32_process -filter "name = '$service'" | foreach-object { $_.SetPriority(64) } | Out-Null
 
 	    }
-
 
     #256	Realtime
     #128	High
@@ -112,34 +106,38 @@ function Run-Two {
     #16384	Below normal
     #64		Low
 
+    Write-Output "Disabling Services..." 
+    foreach ($service in $services_disable) {
+    
+    Write-Output "  Disabling $service"
+    Get-Service -Name $service | Set-Service -StartupType Disabled
+}
+
+    Write-Output ""
 }
 
 function Run-Three {
-	# change power profile back to balanced 	
+	# change power profile back to balanced 
 	
 	powercfg.exe /setactive 381b4222-f694-41f0-9685-ff5bb260df2e | Out-Null
 	Write-Host ""
 	Write-Host "Your Power Profile is now set to : " -NoNewLine
-	powercfg.exe /getactivescheme
-	Write-Host ""
+    powercfg.exe /getactivescheme
+    Write-Host ""
 }
 
 do
  {
     Show-Menu
-    $selection = Read-Host "Please make a selection"
+    $selection = Read-Host "(Q to quit) "
     switch ($selection)
     {
-    '1' {
-    #'You chose option #1'
-    Run-One
-    } '2' {
-    #'You chose option #2'
-    Run-Two
-    } '3' {
-     #'You chose option #3'
-     Run-Three
-    }
+    '1' {Run-One} 
+    '2' {    
+        Run-One
+        Run-Two
+        } 
+    '3' {Run-Three}
     }
     pause
  }
