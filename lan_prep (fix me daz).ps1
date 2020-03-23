@@ -45,6 +45,9 @@ Write-Output "Disable Game DVR and Game Bar"
 force-mkdir "HKLM:\SOFTWARE\Policies\Microsoft\Windows\GameDVR"
 Set-ItemProperty "HKLM:\SOFTWARE\Policies\Microsoft\Windows\GameDVR" "AllowgameDVR" 0
 
+# Ensure auto DNS is set so LAN cache works! 
+Get-NetAdapter | Set-DnsClientServerAddress -ResetServerAddresses
+
 Write-Output "Disable easy access keyboard stuff"
 Set-ItemProperty "HKCU:\Control Panel\Accessibility\StickyKeys" "Flags" "506"
 Set-ItemProperty "HKCU:\Control Panel\Accessibility\Keyboard Response" "Flags" "122"
