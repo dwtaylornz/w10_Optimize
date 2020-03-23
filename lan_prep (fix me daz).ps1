@@ -2,12 +2,14 @@ function Show-Menu {
     Clear-Host
     Write-Host "================ LAN Optimize ================"
     Write-Host ""
-    Write-Host "1: Press '1' to set power profile to High (or Ultimate if exist)"
-    Write-Host "2: Press '2' for the works! - Max power, deprioritize services etc"
+    Write-Host "Press '1' to set power profile to High (or Ultimate if exist)"
+    Write-Host "Press '2' for the works! - Max power, deprioritize services etc"
     Write-Host ""
     Write-Host "================================"
-    Write-Host "3: Press '3' to set power profile to Balanced (for home)"
-    Write-Host "Q: Press 'Q' to quit."
+    Write-Host ""
+    Write-Host "Press '3' to set power profile to Balanced (for home)"
+    Write-Host "Q to quit."
+    Write-Host ""
 }
 
 do
