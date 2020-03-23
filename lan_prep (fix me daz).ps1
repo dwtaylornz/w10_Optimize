@@ -40,10 +40,13 @@ function Run-One {
 function Run-Two {
 
     Write-Host ""
-    #Write-Host "Disable Game DVR and Game Bar..." 
-    #force-mkdir "HKLM:\SOFTWARE\Policies\Microsoft\Windows\GameDVR"
-    #Set-ItemProperty "HKLM:\SOFTWARE\Policies\Microsoft\Windows\GameDVR" "AllowgameDVR" 0
-    
+    Write-Host "Remove W10 xbox app..." 
+    Get-AppxPackage Microsoft.XboxApp | Remove-AppxPackage
+    #REG ADD HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\Windows\GameDVR /v AllowgameDVR /t REG_DWORD /d 0
+    #REG ADD HKEY_CURRENT_USER\Software\Microsoft\GameBar /v AllowAutoGameMode /t REG_DWORD /d 0
+    #Get-AppxPackage *xbox* | Remove-AppxPackage
+    #Set-ItemProperty "HKLM:\SOFTWARE\Policies\Microsoft\Windows\GameDVR" -Name "AllowgameDVR" "0"
+    #New-ItemProperty "HKLM:\SOFTWARE\Policies\Microsoft\Windows\GameDVR" -Name "AllowgameDVR" "0"
 
     Write-Output "Disable easy access keyboard stuff..."
     Set-ItemProperty "HKCU:\Control Panel\Accessibility\StickyKeys" "Flags" "506"
@@ -143,3 +146,5 @@ do
  }
  until ($selection -eq 'q')
 
+
+ # todo 
