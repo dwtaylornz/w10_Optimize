@@ -1,13 +1,12 @@
 function Show-Menu {
-    param (
-        [string]$Title = 'My Menu'
-    )
     Clear-Host
-    Write-Host "================ $Title ================"
-    
-    Write-Host "1: Press '1' for this option."
-    Write-Host "2: Press '2' for this option."
-    Write-Host "3: Press '3' for this option."
+    Write-Host "================ LAN Optimize ================"
+    Write-Host ""
+    Write-Host "1: Press '1' to set power profile to High (or Ultimate if exist)"
+    Write-Host "2: Press '2' for the works! - Max power, deprioritize services etc"
+    Write-Host ""
+    Write-Host "================================"
+    Write-Host "3: Press '3' to set power profile to Balanced (for home)"
     Write-Host "Q: Press 'Q' to quit."
 }
 
