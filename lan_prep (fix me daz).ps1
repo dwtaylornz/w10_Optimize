@@ -37,7 +37,7 @@ function Show-Menu {
     Write-Host ""
     Write-Host "Press '1' For Basic setup ; "
     Write-Host ""
-    Write-Host "  - Set Max power Profile (High or Ultimate if exists)"
+    Write-Host "  - Set balanced power Profile (best for turbo)"
     Write-Host "  - DNS (Auto DHCP assigned, for LAN cahce)" 
     Write-Host ""
     Write-Host "Press '2' For the works! ; "
@@ -56,8 +56,7 @@ function Show-Menu {
 
 function Run-Quick {
 	# if exists changes power mode to "high performance" -- forces higher clock speed on computer 
-	powercfg.exe /setactive 8c5e7fda-e8bf-4a96-9a85-a6e23a8c635c | Out-Null
-	powercfg.exe /setactive bbc1d9f4-fcd1-46b8-b78e-18ca71c442c2 | Out-Null
+	powercfg.exe /setactive 381b4222-f694-41f0-9685-ff5bb260df2e | Out-Null
 	Write-Host ""
 	Write-Host "Your Power Profile is now set to : " -NoNewLine
 	powercfg.exe /getactivescheme
