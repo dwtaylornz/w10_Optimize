@@ -49,9 +49,6 @@ function Show-Menu {
     Write-Host ""
     Write-Host "=============================================="
     Write-Host ""
-    Write-Host "Press '3' to set power profile to Balanced (for home)"
-    Write-Host ""
-    Write-Host ""
 }
 
 function Run-Quick {
@@ -100,16 +97,6 @@ function Run-Works {
 	}
 
     Write-Output ""
-}
-
-function Run-Balanced {
-	# change power profile back to balanced 
-	
-	powercfg.exe /setactive 381b4222-f694-41f0-9685-ff5bb260df2e | Out-Null
-	Write-Host ""
-	Write-Host "Your Power Profile is now set to : " -NoNewLine
-    	powercfg.exe /getactivescheme
-	Write-Host ""
 }
 
 do
