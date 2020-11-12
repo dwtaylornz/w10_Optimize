@@ -38,7 +38,7 @@ function Show-Menu {
     Write-Host "Press '1' For Basic setup ; "
     Write-Host ""
     Write-Host "  - Set balanced power Profile (best for turbo)"
-    Write-Host "  - DNS (Auto DHCP assigned, for LAN cahce)" 
+    Write-Host "  - DNS (Auto DHCP assigned, for LAN cache)" 
     Write-Host ""
     Write-Host "Press '2' For the works! ; "
     Write-Host ""
@@ -59,8 +59,8 @@ function Run-Quick {
 	powercfg.exe /getactivescheme
 
 	Write-Host "Set DNS back to AUTO on DHCP (for LAN cache)..." 
-    	Get-NetAdapter | Set-DnsClientServerAddress -ResetServerAddresses
-    	Write-Host ""
+    Get-NetAdapter | Set-DnsClientServerAddress -ResetServerAddresses
+    Write-Host ""
 }
 
 function Run-Works {
